@@ -1,6 +1,7 @@
 import os
 import sqlite3
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 import google.generativeai as genai
 from PIL import Image
 from dotenv import load_dotenv
@@ -23,6 +24,7 @@ except Exception as e:
     raise RuntimeError(f"Failed to configure Gemini API: {str(e)}")
 
 app = Flask(__name__)
+CORS(app)
 
 def init_db():
     conn = sqlite3.connect('food_logs.db')
@@ -212,4 +214,5 @@ def get_meal_history():
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port, debug=False)
